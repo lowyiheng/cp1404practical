@@ -1,7 +1,9 @@
 import random
+
 LENGTH = 6
 MINIMUM = 1
 MAXIMUM = 45
+
 
 def main():
     quick_picks = int(input("How many quick picks? "))
