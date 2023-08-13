@@ -8,8 +8,10 @@ def word_count():
         else:
             word_counts[word] = 1
 
+    max_word_length = max(len(word) for word in word_counts.keys())
+
     for word, count in sorted(word_counts.items()):
-        print(f"{word} : {count}")
+        print(f"{word:{max_word_length}} : {count}")
 
 
 word_count()
