@@ -108,8 +108,9 @@ def check_blank(prompt):
 def mark_city_visited(city_list):
     if is_unvisited(city_list):
         is_valid = True
+        print("Enter the number of a place to mark as visited")
         while is_valid:
-            index_input = input(f"Enter the number of a place to mark as visited\n>>> ")
+            index_input = input(">>> ")
             if index_input.isdigit():
                 is_valid = False
                 index = int(index_input)
