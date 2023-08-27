@@ -1,37 +1,38 @@
 """
 Replace the contents of this module docstring with your own details
-Name:Yiheng Low
-Date started:29.April.2023
-GitHub URL:https://github.com/JCUS-CP1404/cp1404--travel-tracker---assignment-1-YihengLow
+Name: Low Yi Heng
+Date started: 19th AUGUST 2023
+GitHub URL: https://github.com/JCUS-CP1404/cp1404-travel-tracker-assignment-1-lowyiheng.git
 """
+
 import csv
 import random
 
 MENU = "Menu:\nL - List places\nR - Recommend random place\nA - Add new place\nM - Mark a place as visited\nQ - Quit"
-FILENAME = "A1.csv"
+FILENAME = "places.csv"
 
 
 def main():
-    print("Travel Tracker 1.0 - by <Yiheng Low>")
+    print("Travel Tracker 1.0 - by <Low Yi Heng>")
     city_list = read_file(FILENAME)
     city_list = sorted(city_list, key=by_priority, reverse=True)
     print(f"{(len(city_list))} places loaded from {FILENAME}")
     print(MENU)
-    choice = input(">>> ").lower()
-    while choice != "q":
-        if choice == "l":
-            display_city(city_list)
-        elif choice == "r":
-            recommend_city(city_list)
-        elif choice == "a":
-            add_city_data(city_list)
-        elif choice == "m":
-            display_city(city_list)
-            mark_city_visited(city_list)
+    choice = input(">>>").upper()
+    while choice != "Q":
+        if choice == "L":
+            list_places(city_list)
+        elif choice == "R":
+            recommend_place(city_list)
+        elif choice == "A":
+            add_place(city_list)
+        elif choice == "M":
+            list_places(city_list)
+            mark_visited(city_list)
         else:
             print("Invalid menu choice")
         print(MENU)
-        choice = input(">>> ").lower()
+        choice = input(">>> ").upper()
     save_file(FILENAME, city_list)
     print(f"{(len(city_list))} places saved to {FILENAME}\nHave a nice day :)")
 
@@ -40,8 +41,8 @@ def read_file(filename):
     city_list = []
     with open(filename, "r") as in_file:
         for line in in_file:
-            city_information = line.strip().split(",")
-            city_list.append(city_information)
+            city_info = line.strip().split(",")
+            city_list.append(city_info)
         in_file.close()
     return city_list
 
@@ -49,12 +50,16 @@ def read_file(filename):
 def save_file(filename, city_list):
     with open(filename, "w", newline='') as out_file:
         city_writer = csv.writer(out_file)
-        for city_data in city_list:
-            city_writer.writerow(city_data)
+        for place_info in city_list:
+            city_writer.writerow(place_info)
         out_file.close()
 
 
-def display_city(city_list):
+def by_priority(priority):
+    return priority[2]
+
+
+def list_places(city_list):
     unvisited_number = 0
     for i, city in enumerate(city_list):
         if city[-1] == "n":
@@ -62,51 +67,47 @@ def display_city(city_list):
             unvisited_number += 1
         else:
             visited = " "
-        print(f"{visited}{i + 1}.{city[0]:<10} in {city[1]:<20}{city[2]:>2}")
+        print(f"{visited}{i + 1}.{city[0]:<15} in {city[1]:<15}{city[2]:>5}")
     if unvisited_number == "0":
         print(f"{len(city_list)} places. No places left to visit. Why not add a new place?")
     else:
         print(f"{len(city_list)} places. You still want to visit {unvisited_number} places.")
 
 
-def by_priority(priority):
-    return priority[-2]
-
-
-def recommend_city(city_list):
-    unvisited_cities = []
+def recommend_place(city_list):
+    unvisited_places = []
     for city in city_list:
         if city[-1] == "n":
-            unvisited_cities.append(city[0])
-    if not unvisited_cities:
+            unvisited_places.append(city[0])
+    if not unvisited_places:
         print("No unvisited places")
     else:
-        name = random.choice(unvisited_cities)
+        name = random.choice(unvisited_places)
         print(f"Not sure where to visit next?\nHow about... {name} in {city[1]}?")
 
 
-def add_city_data(city_list):
-    city_name = check_blank("Name: ")
-    city_country = check_blank("Country: ")
-    city_priority = input("Priority: ")
-    while not city_priority.isdigit():
+def add_place(city_list):
+    place_name = check_blank("Name: ")
+    place_country = check_blank("Country: ")
+    place_priority = input("Priority: ")
+    while not place_priority.isdigit():
         print("Priority must be a number")
-        city_priority = input("Priority: ")
-    city_data = [city_name, city_country, city_priority, "n"]
-    city_list.append(city_data)
-    print(f"{city_name} in {city_country} (priority {city_priority}) added to Travel Tracker")
+        place_priority = input("Priority: ")
+    place_info = [place_name, place_country, place_priority, "n"]
+    city_list.append(place_info)
+    print(f"{place_name} in {place_country} (priority {place_priority}) added to Travel Tracker")
 
 
 def check_blank(prompt):
-    data = input(prompt)
-    while data == "":
+    info = input(prompt)
+    while info == "":
         print("Input can not be blank")
-        data = input(prompt)
-    return data
+        info = input(prompt)
+    return info
 
 
-def mark_city_visited(city_list):
-    if is_unvisited(city_list):
+def mark_visited(city_list):
+    if is_visited(city_list):
         is_valid = True
         print("Enter the number of a place to mark as visited")
         while is_valid:
@@ -133,28 +134,12 @@ def mark_city_visited(city_list):
         print("No unvisited places")
 
 
-def is_unvisited(city_list):
+def is_visited(city_list):
     for city in city_list:
-        if city[-1] == "n":
+        if city[3] == "n":
             return True
     return False
 
 
 if __name__ == '__main__':
     main()
-
-# def test_display_city():
-#     city_list = read_file(FILENAME)
-#     display_city(city_list)
-# test_display_city()
-
-# def test_recommend():
-#     city_list = read_file(FILENAME)
-#     recommend_city(city_list)
-# test_recommend()
-
-# def test_add_city_data():
-#     city_list = read_file(FILENAME)
-#     add_city_data(city_list)
-#     print(city_list)
-# test_add_city_data()
